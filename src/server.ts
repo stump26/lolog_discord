@@ -1,13 +1,33 @@
-import { Context } from 'koa';
+import Discord from 'discord.js';
 
-const Koa = require('koa');
+import { BOT_TOKEN } from './config';
+import lologClient from './api/lologClient';
 
-const app = new Koa();
-
-app.use((ctx: Context) => {
-  ctx.body = 'hello, stumpark!';
+console.log('Ping Pong to bot');
+// Create an instance of a Discord client
+const client = new Discord.Client();
+/**
+ * The ready event is vital, it means that only _after_ this will your bot start reacting to information
+ * received from Discord
+ */
+client.on('ready', () => {
+  console.log('I am ready!');
 });
 
-app.listen(4000, () => {
-  console.log('Listening to port 4000');
+// Create an event listener for messages
+client.on('message', message => {
+  // Check the cmd
+  const { content } = message;
+  switch (true) {
+    case content === 'ping':
+      message.channel.send('Pong! `' + Math.floor(client.ping) + ' ms`');
+      break;
+    case /^l!/.test(content):
+      lologClient(content);
+      message.channel.send('hello lolog');
+      break;
+  }
 });
+
+// Log our bot in using the token from https://discordapp.com/developers/applications/me
+client.login(BOT_TOKEN);
