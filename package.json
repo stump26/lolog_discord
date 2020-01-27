@@ -8,15 +8,20 @@
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/server.ts",
     "test-bot": "NODE_ENV=development nodemon --exec ts-node src/discord.ts",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "getCham": "ts-node src/api/crawCampionDB.ts"
   },
   "dependencies": {
+    "@types/cheerio": "^0.22.15",
+    "@types/mongodb": "^3.3.14",
     "@typescript-eslint/parser": "^2.16.0",
     "axios": "^0.19.1",
+    "cheerio": "^1.0.0-rc.3",
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0"
+    "eslint-config-prettier": "^6.9.0",
+    "mongodb": "^3.5.2"
   },
   "devDependencies": {
     "@types/koa": "^2.11.0",

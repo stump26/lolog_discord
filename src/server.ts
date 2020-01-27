@@ -6,6 +6,7 @@ import lologClient from './api/lologClient';
 console.log('Ping Pong to bot');
 // Create an instance of a Discord client
 const client = new Discord.Client();
+
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
  * received from Discord
@@ -23,8 +24,7 @@ client.on('message', message => {
       message.channel.send('Pong! `' + Math.floor(client.ping) + ' ms`');
       break;
     case /^l!/.test(content):
-      lologClient(content);
-      message.channel.send('hello lolog');
+      lologClient(content, message);
       break;
   }
 });
