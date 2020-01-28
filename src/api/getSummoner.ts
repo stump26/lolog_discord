@@ -1,8 +1,24 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 import { LOLOG_BACKEND } from '../config';
 
-export default async (name: string) => {
+type leagueEntryDTO = {
+  leagueId: string;
+  tier: string;
+  rank: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
+};
+
+export type SummonerInfo = {
+  id: string;
+  name: string;
+  summonerLevel: number;
+  leagueStatus: leagueEntryDTO;
+};
+
+const getSummonerInfo = async (name: string) => {
   console.log('TCL: name', name);
 
   // Get enscripted summonor ID.
@@ -24,7 +40,7 @@ export default async (name: string) => {
     },
   });
   const summonerDTO = summonerDTOResult.data.data.getSummonerDTO;
-  console.log('TCL: summonerDTO', summonerDTO);
+  // console.log('TCL: summonerDTO', summonerDTO);
 
   // Get League Info
   const leagueEntryDTOResult = await axios({
@@ -47,32 +63,58 @@ export default async (name: string) => {
     },
   });
 
-  const summonerLeagueStatus = leagueEntryDTOResult.data.data.getLeagueEntryDTO;
-  console.log('TCL: summonerLeagueStatus', summonerLeagueStatus);
+  let summonerLeagueStatus: leagueEntryDTO = leagueEntryDTOResult.data.data.getLeagueEntryDTO;
+  // unranked summoner returned []
+  if (Object.keys(summonerLeagueStatus).length === 0) {
+    summonerLeagueStatus = {
+      leagueId: '00000000-0000-0000-0000-000000000000',
+      tier: 'UNRANKED',
+      rank: '',
+      leaguePoints: 0,
+      wins: 0,
+      losses: 0,
+    };
+  }
 
-  //Get match info
-  const matchlistDTOResult = await axios({
-    url: LOLOG_BACKEND,
-    method: 'post',
-    data: {
-      query: `
-        query($encryptedAccountId:String!, $from: Int, $to: Int){
-          getMatchlistDTO(encryptedAccountId:$encryptedAccountId, from:$from, to:$to){
-            matches{
-              platformId
-              gameId
-              queue
-              timestamp
-              role
-            }
-            totalGames
-            startIndex
-            endIndex
-          }
-        }
-      `,
-      variables: { encryptedAccountId: summonerDTO.accountId, from: 1, to: 20 },
+  // //Get match info
+  // const matchlistDTOResult = await axios({
+  //   url: LOLOG_BACKEND,
+  //   method: 'post',
+  //   data: {
+  //     query: `
+  //       query($encryptedAccountId:String!, $from: Int, $to: Int){
+  //         getMatchlistDTO(encryptedAccountId:$encryptedAccountId, from:$from, to:$to){
+  //           matches{
+  //             platformId
+  //             gameId
+  //             queue
+  //             timestamp
+  //             role
+  //           }
+  //           totalGames
+  //           startIndex
+  //           endIndex
+  //         }
+  //       }
+  //     `,
+  //     variables: { encryptedAccountId: summonerDTO.accountId, from: 1, to: 20 },
+  //   },
+  // });
+  // console.log('TCL: matchlistDTOResult', matchlistDTOResult.data.data.getMatchlistDTO);
+
+  const SummonerDataResult: SummonerInfo = {
+    id: summonerDTO.id,
+    name: summonerDTO.name,
+    summonerLevel: summonerDTO.summonerLevel,
+    leagueStatus: {
+      ...summonerLeagueStatus,
     },
-  });
-  console.log('TCL: matchlistDTOResult', matchlistDTOResult.data.data.getMatchlistDTO);
+    // matchlistDTOResult:{
+    //   ...matchlistDTOResult
+    // }
+  };
+
+  return SummonerDataResult;
 };
+
+export default getSummonerInfo;
