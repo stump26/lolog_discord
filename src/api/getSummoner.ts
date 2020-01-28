@@ -56,8 +56,8 @@ export default async (name: string) => {
     method: 'post',
     data: {
       query: `
-        query($encryptedAccountId:String!,from:Int,to:Int){
-          getMatchlistDTO(encryptedAccountId:$encryptedAccountId,from:$from,to:$to){
+        query($encryptedAccountId:String!, $from: Int, $to: Int){
+          getMatchlistDTO(encryptedAccountId:$encryptedAccountId, from:$from, to:$to){
             matches{
               platformId
               gameId
@@ -74,5 +74,5 @@ export default async (name: string) => {
       variables: { encryptedAccountId: summonerDTO.accountId, from: 1, to: 20 },
     },
   });
-  console.log('TCL: matchlistDTOResult', matchlistDTOResult);
+  console.log('TCL: matchlistDTOResult', matchlistDTOResult.data.data.getMatchlistDTO);
 };
