@@ -23,7 +23,7 @@ client.on('message', message => {
     case content === 'ping':
       message.channel.send('Pong! `' + Math.floor(client.ping) + ' ms`');
       break;
-    case /^l!/.test(content):
+    case /^l[a-z]?\!/.test(content):
       lologClient(content, message);
       break;
   }
