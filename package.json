@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=development nodemon --exec ts-node src/server.ts",
+    "production": "NODE_ENV=production ts-node src/server.ts",
     "test-bot": "NODE_ENV=development nodemon --exec ts-node src/discord.ts",
     "test": "NODE_ENV=test jest",
     "getCham": "ts-node src/api/crawCampionDB.ts"
