@@ -8,9 +8,7 @@ export default async () => {
     method: 'get',
     url: `${lolStaticCDN}/${LOL_CLIENT_VERSION}/data/ko_KR/champion.json`,
   };
-  console.log('TCL: getCham -> axiosConfig', axiosConfig.url);
 
   const { data } = await axios(axiosConfig);
-  console.log('TCL: data', typeof data);
   return data;
 };

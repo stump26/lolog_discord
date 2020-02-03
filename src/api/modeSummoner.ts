@@ -178,16 +178,10 @@ const modeSummoner = async function(summonerName: string): Promise<RichEmbed> {
           value: `${summonerData.leagueStatus[0].leaguePoints}`,
           inline: true,
         },
-        {
-          name: '\u200b',
-          value: '\u200b',
-        },
-        {
-          name: 'Inline field title',
-          value: 'Some value here',
-          inline: true,
-        },
       ],
+      footer: {
+        text: '자세한정보 Click  `Powered by Blitz.gg`',
+      },
     });
     return resultEmbed;
   }

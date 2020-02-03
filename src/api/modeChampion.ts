@@ -1,5 +1,6 @@
 import { RichEmbed, Attachment, MessageEmbedImage } from 'discord.js';
 
+import { LOL_CLIENT_VERSION } from '../config';
 import ChampionHintImgModel from '../mongo/ChampionHintImgModel';
 import chamNameJson from './krChampion.json';
 
@@ -12,7 +13,6 @@ const chamNameKRtoEN = (nameKR: string): string | undefined => {
 
 const searchChampionHint = async (enChamName: string): Promise<Attachment[]> => {
   const hints = await ChampionHintImgModel.findOne({ name: enChamName }).exec();
-  console.log('TCL: searchChampionHint -> hints', hints);
   if (!hints) {
     throw new Error('DB find Error');
   }
@@ -40,11 +40,17 @@ const modeChampion = async (chamName: string): Promise<RichEmbed> => {
   }
 
   const HintImgs = await searchChampionHint(enChamName);
-  console.log('TCL: HintImgs', HintImgs);
 
   const resultEmbed: RichEmbed = new RichEmbed({
     color: 0x0099ff,
     title: `${chamName} | ${enChamName}`,
+    thumbnail: {
+      url: `http://ddragon.leagueoflegends.com/cdn/${LOL_CLIENT_VERSION}/img/champion/${enChamName}.png`,
+    },
+    url: `https://blitz.gg/lol/champions/${enChamName}`,
+    footer: {
+      text: '자세한정보 Click  `Powered by Blitz.gg`',
+    },
   });
   resultEmbed.attachFiles(HintImgs);
 

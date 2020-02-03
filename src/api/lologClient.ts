@@ -26,8 +26,6 @@ const callUsageMsg = function(): RichEmbed {
 };
 
 const lologClient = async (content: string, message: Message) => {
-  console.log('TCL: content', content);
-
   const CMD = content.split('! ');
 
   switch (CMD[0]) {
