@@ -13,6 +13,7 @@ const chamNameKRtoEN = (nameKR: string): string | undefined => {
 
 const searchChampionHint = async (enChamName: string): Promise<Attachment[]> => {
   const hints = await ChampionHintImgModel.findOne({ name: enChamName }).exec();
+  // console.log('TCL: hints', hints);
   if (!hints) {
     throw new Error('DB find Error');
   }

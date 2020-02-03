@@ -50,8 +50,6 @@ const tierRead = function(tier: string, rank: string): string {
 };
 
 const getSummonerInfo = async (name: string) => {
-  console.log('TCL: name', name);
-
   // Get enscripted summonor ID.
   const summonerDTOResult = await axios({
     url: LOLOG_BACKEND,
@@ -71,13 +69,13 @@ const getSummonerInfo = async (name: string) => {
       variables: { summonerName: encodeURIComponent(name) },
     },
   });
-  console.log('TCL: getSummonerInfo -> summonerDTOResult', summonerDTOResult);
+  // console.log('TCL: getSummonerInfo -> summonerDTOResult', summonerDTOResult);
   if (summonerDTOResult.data.data === null) {
     console.log(summonerDTOResult.data.errors);
     return null;
   } else {
     const summonerDTO = summonerDTOResult.data.data.getSummonerDTO;
-    // console.log('TCL: summonerDTO', summonerDTO);
+    // // console.log('TCL: summonerDTO', summonerDTO);
 
     // Get League Info
     const leagueEntryDTOResult = await axios({
@@ -108,7 +106,7 @@ const getSummonerInfo = async (name: string) => {
         {
           leagueId: '00000000-0000-0000-0000-000000000000',
           tier: 'UNRANKED',
-          queueType: '',
+          queueType: 'UNRANKED',
           rank: '',
           leaguePoints: 0,
           wins: 0,
@@ -140,7 +138,7 @@ const modeSummoner = async function(summonerName: string): Promise<RichEmbed> {
     });
     return failureEmbed;
   } else {
-    console.log('TCL: lologClient -> summonerData', summonerData);
+    // console.log('TCL: lologClient -> summonerData', summonerData);
 
     const leagueTierEmblem = `https://opgg-static.akamaized.net/images/medals/${tierRead(
       summonerData.leagueStatus[0].tier,
@@ -161,6 +159,7 @@ const modeSummoner = async function(summonerName: string): Promise<RichEmbed> {
       thumbnail: {
         url: leagueTierEmblem,
       },
+      url: `https://blitz.gg/lol/profile/kr/${encodeURIComponent(summonerData.name)}`,
       fields: [
         {
           name: `${summonerData.leagueStatus[0].queueType}`,

@@ -8,6 +8,7 @@ console.log('TCL: (`${MONGO_URL}/${DATABASE_NAME}`', `mongodb://${MONGO_URL}/${D
 // mongodb Configure
 mongoose.connect(`mongodb://${MONGO_URL}/${DATABASE_NAME}`, {
   useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 mongoose.connection.once('open', () => {
   console.log('✅MongoDB Connected');
