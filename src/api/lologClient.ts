@@ -1,6 +1,7 @@
 import { RichEmbed, Message } from 'discord.js';
 
 import modeSummoner from './modeSummoner';
+import modeChampion from './modeChampion';
 
 const callUsageMsg = function(): RichEmbed {
   const usageMsg = '! Wrong values !';
@@ -34,6 +35,7 @@ const lologClient = async (content: string, message: Message) => {
       message.channel.sendEmbed(await modeSummoner(CMD[1]));
       break;
     case 'lc':
+      message.channel.sendEmbed(await modeChampion(CMD[1]));
       break;
     default:
       message.channel.sendEmbed(callUsageMsg());

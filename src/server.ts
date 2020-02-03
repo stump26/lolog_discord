@@ -1,9 +1,18 @@
 import Discord from 'discord.js';
+import mongoose from 'mongoose';
 
-import { BOT_TOKEN } from './config';
 import lologClient from './api/lologClient';
+import { BOT_TOKEN, MONGO_URL, DATABASE_NAME } from './config';
 
-console.log('Ping Pong to bot');
+console.log('TCL: (`${MONGO_URL}/${DATABASE_NAME}`', `mongodb://${MONGO_URL}/${DATABASE_NAME}`);
+// mongodb Configure
+mongoose.connect(`mongodb://${MONGO_URL}/${DATABASE_NAME}`, {
+  useNewUrlParser: true,
+});
+mongoose.connection.once('open', () => {
+  console.log('✅MongoDB Connected');
+});
+
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
