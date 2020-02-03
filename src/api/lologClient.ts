@@ -1,7 +1,6 @@
 import { RichEmbed, Message } from 'discord.js';
 
-import getCham from './crawCampionDB';
-import getSummonerInfo from './getSummoner';
+import modeSummoner from './modeSummoner';
 
 const callUsageMsg = function(): RichEmbed {
   const usageMsg = '! Wrong values !';
@@ -25,98 +24,6 @@ const callUsageMsg = function(): RichEmbed {
   return usageEmbed;
 };
 
-const tierRead = function(tier: string, rank: string): string {
-  if (tier === 'UNRANKED') {
-    return 'default';
-  }
-
-  const lowerCaseTier = tier.toLowerCase();
-  let arabicRank = '';
-
-  switch (rank) {
-    case 'I':
-      arabicRank = '1';
-      break;
-    case 'II':
-      arabicRank = '2';
-      break;
-    case 'III':
-      arabicRank = '3';
-      break;
-    case 'IV':
-      arabicRank = '4';
-      break;
-    case 'V':
-      arabicRank = '5';
-      break;
-  }
-
-  return `${lowerCaseTier}_${arabicRank}`;
-};
-
-const modeSummoner = async function(summonerName: string): Promise<RichEmbed> {
-  // Call summoner's detail Info
-  const summonerData = await getSummonerInfo(summonerName);
-  // null : summoner name not exist.
-  if (summonerData === null) {
-    const failureEmbed: RichEmbed = new RichEmbed({
-      color: 0xff2020,
-      title: 'Summoner Not Founded !!!',
-    });
-    return failureEmbed;
-  } else {
-    console.log('TCL: lologClient -> summonerData', summonerData);
-
-    const leagueTierEmblem = `https://opgg-static.akamaized.net/images/medals/${tierRead(
-      summonerData.leagueStatus[0].tier,
-      summonerData.leagueStatus[0].rank,
-    )}.png`;
-    const winRate =
-      summonerData.leagueStatus[0].wins /
-      (summonerData.leagueStatus[0].wins + summonerData.leagueStatus[0].losses);
-
-    // Write discord embed message
-    const resultEmbed: RichEmbed = new RichEmbed({
-      color: 0x0099ff,
-      author: {
-        name: summonerData.name,
-        icon_url: `https://opgg-static.akamaized.net/images/profile_icons/profileIcon${summonerData.profileIconId}.jpg`,
-      },
-      title: summonerData.name,
-      thumbnail: {
-        url: leagueTierEmblem,
-      },
-      fields: [
-        {
-          name: '개인/2인 랭크',
-          value: `${summonerData.leagueStatus[0].tier} ${summonerData.leagueStatus[0].rank}`,
-          inline: true,
-        },
-        {
-          name: '승/패',
-          value: `${summonerData.leagueStatus[0].wins}/${
-            summonerData.leagueStatus[0].losses
-          }  (${Math.floor(winRate * 10000) / 100})`,
-        },
-        {
-          name: 'points',
-          value: `${summonerData.leagueStatus[0].leaguePoints}`,
-          inline: true,
-        },
-        {
-          name: '\u200b',
-          value: '\u200b',
-        },
-        {
-          name: 'Inline field title',
-          value: 'Some value here',
-          inline: true,
-        },
-      ],
-    });
-    return resultEmbed;
-  }
-};
 const lologClient = async (content: string, message: Message) => {
   console.log('TCL: content', content);
 

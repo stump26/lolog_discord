@@ -9,7 +9,9 @@
     "outDir": "./dist",
     "strict": true,
     "baseUrl": "./",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "typeRoots": ["./node_modules/@types", "./src/@types"]
   }
 }
