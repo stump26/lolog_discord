@@ -3,7 +3,7 @@ import { RichEmbed, Message } from 'discord.js';
 import modeSummoner from './modeSummoner';
 import modeChampion from './modeChampion';
 
-const callUsageMsg = function(): RichEmbed {
+export const callUsageMsg = function(): RichEmbed {
   const usageMsg = '! Wrong values !';
 
   const usageEmbed: RichEmbed = new RichEmbed({

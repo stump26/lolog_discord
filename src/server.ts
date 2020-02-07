@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import mongoose from 'mongoose';
 
-import lologClient from './api/lologClient';
+import lologClient, { callUsageMsg } from './api/lologClient';
 import { BOT_TOKEN, MONGO_URL, DATABASE_NAME } from './config';
 
 console.log('TCL: (`${MONGO_URL}/${DATABASE_NAME}`', `mongodb://${MONGO_URL}/${DATABASE_NAME}`);
@@ -32,6 +32,9 @@ client.on('message', message => {
   switch (true) {
     case content === 'ping':
       message.channel.send('Pong! `' + Math.floor(client.ping) + ' ms`');
+      break;
+    case content === 'lolog':
+      message.channel.sendEmbed(callUsageMsg());
       break;
     case /^l[a-z]?\!/.test(content):
       lologClient(content, message);
