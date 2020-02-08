@@ -33,7 +33,7 @@ const lologClient = async (content: string, message: Message) => {
       message.channel.sendEmbed(await modeSummoner(CMD[1]));
       break;
     case 'lc':
-      message.channel.sendEmbed(await modeChampion(CMD[1]));
+      message.channel.sendEmbed(await modeChampion(CMD[1], message.member.user.id));
       break;
     default:
       message.channel.sendEmbed(callUsageMsg());

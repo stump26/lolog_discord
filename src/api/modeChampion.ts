@@ -1,19 +1,46 @@
-import { RichEmbed, Attachment, MessageEmbedImage } from 'discord.js';
+import { RichEmbed, Attachment } from 'discord.js';
+import mongoose from 'mongoose';
 
 import { LOL_CLIENT_VERSION } from '../config';
 import ChampionHintImgModel from '../mongo/ChampionHintImgModel';
-import chamNameJson from './krChampion.json';
+import dynamicChamNamesModels, { ChampionNames } from '../mongo/ChampionNamesModel';
 
-const chamNameKRtoEN = (nameKR: string): string | undefined => {
-  const result = chamNameJson.find(cham => {
-    return cham.KR.includes(nameKR);
-  });
+const chamNameKRtoEN = async (
+  model: mongoose.Model<ChampionNames>,
+  nameKR: String,
+): Promise<String | undefined> => {
+  const result = await model.findOne({ KR: nameKR }).exec();
   return result?.EN;
 };
 
-const searchChampionHint = async (enChamName: string): Promise<Attachment[]> => {
+const addChamAlias = async (
+  model: mongoose.Model<ChampionNames>,
+  [chamNameKR, newAlias]: string[],
+) => {
+  try {
+    const updateResult = await model.findOneAndUpdate(
+      { KR: chamNameKR },
+      { $push: { KR: newAlias } },
+    );
+    const doneEmbed: RichEmbed = new RichEmbed({
+      color: 0x0099ff,
+      title: 'Configure done.',
+      description: `${chamNameKR}:${updateResult?.KR.toString()}`,
+    });
+    return doneEmbed;
+  } catch (e) {
+    const errEmbed: RichEmbed = new RichEmbed({
+      color: 0xff2020,
+      title: 'Fail to save.',
+      description: `${chamNameKR}!=${newAlias}`,
+    });
+    return errEmbed;
+  }
+};
+
+const searchChampionHint = async (enChamName: String): Promise<Attachment[]> => {
   const hints = await ChampionHintImgModel.findOne({ name: enChamName }).exec();
-  // console.log('TCL: hints', hints);
+
   if (!hints) {
     throw new Error('DB find Error');
   }
@@ -27,16 +54,27 @@ const searchChampionHint = async (enChamName: string): Promise<Attachment[]> => 
   return resultImg;
 };
 
-const modeChampion = async (chamName: string): Promise<RichEmbed> => {
+const modeChampion = async (chamName: String, dicoUserID: String): Promise<RichEmbed> => {
+  const errorEmbed: RichEmbed = new RichEmbed({
+    color: 0xff2020,
+    title: 'Wrong Champion Name !!!',
+    description: '별명 설정법 : lc! set [챔피언 명]=[new별명]',
+  });
   const nonSpaceName = chamName.replace(/\s/gi, '');
-  const enChamName = chamNameKRtoEN(nonSpaceName);
+
+  if (nonSpaceName.slice(0, 3) === 'set') {
+    const assignmentCMD = nonSpaceName.slice(3).split('=');
+    // 대입식이 잘못된경우 에러.
+    if (!assignmentCMD[1]) {
+      return errorEmbed;
+    }
+    console.log('TCL: assignmentCMD', assignmentCMD);
+    return await addChamAlias(dynamicChamNamesModels(dicoUserID), assignmentCMD);
+  }
+  const enChamName = await chamNameKRtoEN(dynamicChamNamesModels(dicoUserID), nonSpaceName);
 
   // Wrong Champion name
   if (!enChamName) {
-    const errorEmbed: RichEmbed = new RichEmbed({
-      color: 0xff2020,
-      title: 'Wrong Champion Name !!!',
-    });
     return errorEmbed;
   }
 
