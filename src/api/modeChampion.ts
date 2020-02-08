@@ -22,6 +22,8 @@ const addChamAlias = async (
       { KR: chamNameKR },
       { $push: { KR: newAlias } },
     );
+    console.log('TCL: updateResult', updateResult);
+
     const doneEmbed: RichEmbed = new RichEmbed({
       color: 0x0099ff,
       title: 'Configure done.',
@@ -61,17 +63,19 @@ const modeChampion = async (chamName: String, dicoUserID: String): Promise<RichE
     description: '별명 설정법 : lc! set [챔피언 명]=[new별명]',
   });
   const nonSpaceName = chamName.replace(/\s/gi, '');
-
+  console.log('TCL: nonSpaceName', nonSpaceName);
+  const eachUsersModel = await dynamicChamNamesModels(dicoUserID);
   if (nonSpaceName.slice(0, 3) === 'set') {
     const assignmentCMD = nonSpaceName.slice(3).split('=');
+    console.log('TCL: 대입식 에러;');
     // 대입식이 잘못된경우 에러.
     if (!assignmentCMD[1]) {
       return errorEmbed;
     }
     console.log('TCL: assignmentCMD', assignmentCMD);
-    return await addChamAlias(dynamicChamNamesModels(dicoUserID), assignmentCMD);
+    return await addChamAlias(eachUsersModel, assignmentCMD);
   }
-  const enChamName = await chamNameKRtoEN(dynamicChamNamesModels(dicoUserID), nonSpaceName);
+  const enChamName = await chamNameKRtoEN(eachUsersModel, nonSpaceName);
 
   // Wrong Champion name
   if (!enChamName) {
