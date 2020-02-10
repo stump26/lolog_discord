@@ -35,8 +35,9 @@ const dynamicChamNamesModels = (userID: String): Promise<mongoose.Model<Champion
         ChampionNamesSchema,
         `ChamNames_${userID}`,
       );
-      console.log('TCL: dynamicModels', dynamicModels);
-      resolve(dynamicModels[`ChamNames_${userID}`].insertMany(chamNameJson));
+      dynamicModels[`ChamNames_${userID}`].insertMany(chamNameJson).then(() => {
+        resolve(dynamicModels[`ChamNames_${userID}`]);
+      });
     }
     resolve(dynamicModels[`ChamNames_${userID}`]);
   });

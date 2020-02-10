@@ -12,12 +12,16 @@ export const callUsageMsg = function(): RichEmbed {
     description: usageMsg,
     fields: [
       {
-        name: 'ls! < Summoner Name >',
-        value: '소환사의 리그 정보를 불러옵니다.',
+        name: '소환사 정보 조회',
+        value: 'ls! < Summoner Name > 소환사의 리그 정보를 불러옵니다.',
       },
       {
-        name: 'lc! < Champion Name >',
-        value: '챔피언의 세부정보를 불러옵니다.',
+        name: '챔피언 정보 조회',
+        value: 'lc! < Champion Name > 챔피언의 세부정보를 불러옵니다.',
+      },
+      {
+        name: '챔피언 별명 설정',
+        value: '별명 설정법 : lc! set [챔피언 명]=[new별명]',
       },
     ],
   });

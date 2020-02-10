@@ -9,7 +9,9 @@ const chamNameKRtoEN = async (
   model: mongoose.Model<ChampionNames>,
   nameKR: String,
 ): Promise<String | undefined> => {
+  await model.find({});
   const result = await model.findOne({ KR: nameKR }).exec();
+  console.log('TCL: result', result);
   return result?.EN;
 };
 
@@ -21,6 +23,7 @@ const addChamAlias = async (
     const updateResult = await model.findOneAndUpdate(
       { KR: chamNameKR },
       { $push: { KR: newAlias } },
+      { new: true },
     );
     console.log('TCL: updateResult', updateResult);
 
@@ -63,7 +66,6 @@ const modeChampion = async (chamName: String, dicoUserID: String): Promise<RichE
     description: '별명 설정법 : lc! set [챔피언 명]=[new별명]',
   });
   const nonSpaceName = chamName.replace(/\s/gi, '');
-  console.log('TCL: nonSpaceName', nonSpaceName);
   const eachUsersModel = await dynamicChamNamesModels(dicoUserID);
   if (nonSpaceName.slice(0, 3) === 'set') {
     const assignmentCMD = nonSpaceName.slice(3).split('=');
